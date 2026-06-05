@@ -181,8 +181,8 @@
       <p class="lead">A living journal of building an AI cooking system — <b>software-first, hardware-last</b>. We prove the machine can <em>understand</em> cooking before we ever buy an arm.</p>
       <div class="meta-row">
         <span class="chip"><span class="pulse"></span> <b>Phase&nbsp;0</b> &nbsp;Kitchen OS v0.1</span>
-        <span class="chip">Last updated&nbsp; <b>5 Jun 2026, 18:09 IST</b></span>
-        <span class="chip">Doc&nbsp;rev&nbsp; <b>r4</b></span>
+        <span class="chip">Last updated&nbsp; <b>5 Jun 2026, 18:27 IST</b></span>
+        <span class="chip">Doc&nbsp;rev&nbsp; <b>r5</b></span>
       </div>
     </div>
 
@@ -493,6 +493,10 @@
     <h2>Changelog</h2>
     <div class="log">
       <div class="entry">
+        <div class="when">2026-06-05 · 18:27 IST — r5</div>
+        <p style="margin:.3em 0 0"><b>Ran the Plan phase as an SDLC.</b> Wrote <code>PLAN.md</code> — iterative/Agile with spike-gates; requirements for the Record→Recreate loop; design + <b>Python-first tech stack by layer</b>; an iteration plan mapped to the harness gates; risks — and <code>METRICS.md</code> — <b>DORA</b> delivery scaffold + flow metrics + <b>Kitchen-OS leading indicators</b> (schema-valid %, gold-step accuracy, recreation fidelity, ₹/recipe) with a running log to update each iteration. Proposed a harness North-Star amendment (→ <em>"record a dish and recreate it within X% profile fidelity"</em>), pending sign-off.</p>
+      </div>
+      <div class="entry">
         <div class="when">2026-06-05 · 18:09 IST — r4</div>
         <p style="margin:.3em 0 0"><b>Extracted the CloudChef video's audio (transcript) — it validates the Record → Recreate reframe.</b> Pulled the YouTube auto-captions via <code>yt-dlp</code> (kept local, unpublished). In the narration a guest chef confirms: a non-intrusive <b>recording engine captures temperature, weight and colour in real time</b> and codifies them into a <b>machine-readable file</b>; <b>unskilled operators recreate dishes</b> via "Google-Maps-style", <b>light-to-action</b> instructions with <b>RFID-tagged, precise-weight containers</b>; the OS <b>monitors and adjusts in real time</b>; dishes are broken into <b>sub-recipes</b>. Refinements to fold in: (1) recreation is a <b>real-time closed loop</b>, not open-loop replay; (2) key signals include <b>colour and rate-of-change</b> (e.g. dT/dt of the lamb), not just absolute values; (3) the core value prop is <b>deskilling</b> — reproduce a top chef's dish with an operator who can't cook.</p>
       </div>
@@ -518,7 +522,7 @@
 </main>
 
 <footer class="wrap">
-  <p>Kitchen OS — build journal · <b>Last updated 5 June 2026, 18:09 IST</b> · doc rev r4<br/>
+  <p>Kitchen OS — build journal · <b>Last updated 5 June 2026, 18:27 IST</b> · doc rev r5<br/>
   Living document — version-controlled in the <code>kitchen-os</code> repo (GitHub: Davidfrancisloretta) and published to GitHub Pages. Edit <code>index.html</code>, append a changelog entry, update the timestamp, commit.</p>
 </footer>
 
