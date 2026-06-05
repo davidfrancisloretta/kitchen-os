@@ -1,0 +1,514 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Kitchen OS — Build Journal</title>
+<meta name="description" content="The living build journal for Kitchen OS — an AI-native kitchen-automation venture. Software-first, hardware-last." />
+<style>
+  :root{
+    --bg:#0B0F14; --surface:#141A22; --surface-2:#1B2430;
+    --text:#E6EDF3; --muted:#93A1B0; --faint:#5C6B7A;
+    --border:rgba(255,255,255,.08); --border-strong:rgba(255,255,255,.14);
+    --heat-1:#FF7A45; --heat-2:#FFB068; --mint:#3ECFA0; --blue:#5BA8FF;
+    --radius:18px; --radius-sm:12px;
+    --maxw:920px;
+    --shadow:0 18px 50px -20px rgba(0,0,0,.7);
+    --mono:ui-monospace,SFMono-Regular,"SF Mono",Menlo,Consolas,"Liberation Mono",monospace;
+    --sans:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+  }
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  @media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+  body{
+    margin:0; background:var(--bg); color:var(--text);
+    font-family:var(--sans); line-height:1.65; font-size:16px;
+    -webkit-font-smoothing:antialiased;
+    background-image:
+      radial-gradient(900px 500px at 80% -10%, rgba(255,122,69,.10), transparent 60%),
+      radial-gradient(700px 500px at -10% 10%, rgba(62,207,160,.08), transparent 55%);
+    background-attachment:fixed;
+  }
+  a{color:var(--mint); text-decoration:none}
+  a:hover{text-decoration:underline}
+
+  /* ---------- top bar ---------- */
+  .topbar{
+    position:sticky; top:0; z-index:20; backdrop-filter:blur(10px);
+    background:rgba(11,15,20,.72); border-bottom:1px solid var(--border);
+  }
+  .topbar .wrap{max-width:var(--maxw); margin:0 auto; padding:12px 22px;
+    display:flex; align-items:center; gap:14px; flex-wrap:wrap}
+  .brand{display:flex; align-items:center; gap:10px; font-weight:700; letter-spacing:.2px}
+  .brand .dot{width:10px;height:10px;border-radius:50%;
+    background:linear-gradient(135deg,var(--heat-1),var(--heat-2));
+    box-shadow:0 0 14px rgba(255,122,69,.7)}
+  .topnav{display:flex; gap:18px; margin-left:auto; flex-wrap:wrap}
+  .topnav a{color:var(--muted); font-size:14px; font-weight:500}
+  .topnav a:hover{color:var(--text); text-decoration:none}
+
+  /* ---------- layout ---------- */
+  .wrap{max-width:var(--maxw); margin:0 auto; padding:0 22px}
+  section{padding:46px 0; border-top:1px solid var(--border)}
+  section:first-of-type{border-top:none}
+  h1,h2,h3{line-height:1.2; letter-spacing:-.01em}
+  h2{font-size:clamp(22px,3.4vw,30px); margin:0 0 6px}
+  h3{font-size:18px; margin:26px 0 8px}
+  .eyebrow{font-family:var(--mono); font-size:12px; letter-spacing:.18em;
+    text-transform:uppercase; color:var(--heat-2); margin:0 0 10px}
+  .lead{color:var(--muted); font-size:18px; max-width:62ch}
+  p{max-width:70ch}
+
+  /* ---------- hero ---------- */
+  .hero{padding:34px 0 14px}
+  .hero-grid{display:grid; grid-template-columns:1.05fr .95fr; gap:30px; align-items:center}
+  @media (max-width:760px){.hero-grid{grid-template-columns:1fr}}
+  .hero h1{font-size:clamp(32px,6vw,52px); margin:.2em 0 .3em;
+    background:linear-gradient(180deg,#fff,#c6d2dd); -webkit-background-clip:text;
+    background-clip:text; color:transparent}
+  .hero .lead{font-size:clamp(16px,2.4vw,20px)}
+  .meta-row{display:flex; gap:10px; flex-wrap:wrap; margin-top:22px}
+  .chip{display:inline-flex; align-items:center; gap:8px; font-family:var(--mono);
+    font-size:12.5px; color:var(--text); background:var(--surface);
+    border:1px solid var(--border-strong); padding:7px 12px; border-radius:999px}
+  .chip b{color:var(--heat-2); font-weight:600}
+  .chip .pulse{width:8px;height:8px;border-radius:50%;background:var(--mint);
+    box-shadow:0 0 0 0 rgba(62,207,160,.6); animation:pulse 2.4s infinite}
+  @keyframes pulse{0%{box-shadow:0 0 0 0 rgba(62,207,160,.5)}
+    70%{box-shadow:0 0 0 10px rgba(62,207,160,0)}100%{box-shadow:0 0 0 0 rgba(62,207,160,0)}}
+  @media (prefers-reduced-motion:reduce){.pulse{animation:none}}
+
+  .art{width:100%; height:auto; display:block; filter:drop-shadow(0 20px 40px rgba(0,0,0,.5))}
+  .steam{animation:rise 6s ease-in-out infinite}
+  .steam.s2{animation-delay:1.2s}
+  .steam.s3{animation-delay:2.4s}
+  @keyframes rise{0%,100%{opacity:.35; transform:translateY(2px)}
+    50%{opacity:.9; transform:translateY(-4px)}}
+  @media (prefers-reduced-motion:reduce){.steam{animation:none; opacity:.7}}
+
+  /* ---------- cards ---------- */
+  .card{background:var(--surface); border:1px solid var(--border);
+    border-radius:var(--radius); padding:20px 22px; box-shadow:var(--shadow)}
+  .grid2{display:grid; grid-template-columns:1fr 1fr; gap:16px}
+  .grid3{display:grid; grid-template-columns:repeat(3,1fr); gap:14px}
+  @media (max-width:680px){.grid2,.grid3{grid-template-columns:1fr}}
+
+  .callout{background:linear-gradient(180deg,rgba(255,122,69,.10),rgba(255,122,69,.03));
+    border:1px solid rgba(255,122,69,.28); border-radius:var(--radius);
+    padding:18px 20px; display:flex; gap:14px; align-items:flex-start}
+  .callout .ico{font-size:22px; line-height:1}
+  .callout.mint{background:linear-gradient(180deg,rgba(62,207,160,.10),rgba(62,207,160,.03));
+    border-color:rgba(62,207,160,.30)}
+
+  /* ---------- roadmap ---------- */
+  .roadmap{width:100%; height:auto; display:block; margin-top:10px}
+
+  /* ---------- pipeline ---------- */
+  .pipe{display:flex; flex-direction:column; gap:0; margin-top:10px}
+  .pstep{display:flex; gap:16px; align-items:flex-start}
+  .pstep .rail{display:flex; flex-direction:column; align-items:center}
+  .pstep .node{width:34px;height:34px;border-radius:50%;flex:none;
+    display:grid;place-items:center;font-family:var(--mono);font-size:13px;font-weight:700;
+    background:var(--surface-2); border:1px solid var(--border-strong); color:var(--heat-2)}
+  .pstep .line{width:2px;flex:1;min-height:22px;background:linear-gradient(var(--border-strong),var(--border))}
+  .pstep:last-child .line{display:none}
+  .pstep .body{padding-bottom:18px}
+  .pstep .body b{display:block}
+  .pstep .body span{color:var(--muted); font-size:14.5px}
+
+  /* ---------- table ---------- */
+  table{width:100%; border-collapse:collapse; margin-top:8px; font-size:15px}
+  th,td{text-align:left; padding:11px 12px; border-bottom:1px solid var(--border); vertical-align:top}
+  th{color:var(--faint); font-weight:600; font-size:12.5px; text-transform:uppercase; letter-spacing:.06em}
+  td:first-child{color:var(--text); font-weight:600; width:34%}
+  tr:last-child td{border-bottom:none}
+
+  /* ---------- code ---------- */
+  pre{background:#0A0E13; border:1px solid var(--border); border-radius:var(--radius-sm);
+    padding:16px 18px; overflow:auto; font-family:var(--mono); font-size:13px; line-height:1.6;
+    color:#cdd9e5}
+  code{font-family:var(--mono); font-size:.92em; background:var(--surface-2);
+    padding:1.5px 6px; border-radius:6px; border:1px solid var(--border); color:#e7c7a8}
+  pre code{background:none;border:none;padding:0;color:inherit}
+  .tok-key{color:#7fc7ff}.tok-str{color:#9be6b6}.tok-num{color:#ffc07a}
+  .tok-com{color:#5c6b7a; font-style:italic}.tok-pun{color:#93a1b0}
+
+  /* ---------- lists ---------- */
+  ul.clean{list-style:none; padding:0; margin:10px 0}
+  ul.clean li{padding:7px 0 7px 26px; position:relative; color:var(--text)}
+  ul.clean li::before{content:""; position:absolute; left:4px; top:14px; width:7px; height:7px;
+    border-radius:2px; background:linear-gradient(135deg,var(--heat-1),var(--heat-2))}
+  ul.clean.mint li::before{background:linear-gradient(135deg,var(--mint),#7ef0c8)}
+  .muted{color:var(--muted)}
+  .pill{display:inline-block; font-family:var(--mono); font-size:11.5px; padding:2px 8px;
+    border-radius:999px; border:1px solid var(--border-strong); color:var(--muted); margin-left:6px}
+  .pill.done{color:var(--mint); border-color:rgba(62,207,160,.4)}
+  .pill.now{color:var(--heat-2); border-color:rgba(255,176,104,.45)}
+  .pill.next{color:var(--blue); border-color:rgba(91,168,255,.4)}
+
+  /* ---------- changelog ---------- */
+  .log{border-left:2px solid var(--border-strong); margin-left:6px; padding-left:22px}
+  .log .entry{position:relative; padding-bottom:22px}
+  .log .entry::before{content:""; position:absolute; left:-29px; top:6px; width:12px; height:12px;
+    border-radius:50%; background:var(--heat-1); box-shadow:0 0 0 4px rgba(255,122,69,.18)}
+  .log .when{font-family:var(--mono); font-size:12.5px; color:var(--heat-2)}
+
+  footer{padding:34px 0 60px; color:var(--faint); font-size:13.5px; border-top:1px solid var(--border)}
+  footer code{color:var(--muted)}
+  .kbd{font-family:var(--mono); font-size:12px; color:var(--muted)}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="wrap" style="padding-left:22px;padding-right:22px">
+    <div class="brand"><span class="dot"></span> Kitchen&nbsp;OS <span class="kbd" style="color:var(--faint)">/ build journal</span></div>
+    <nav class="topnav">
+      <a href="#thesis">Thesis</a>
+      <a href="#roadmap">Roadmap</a>
+      <a href="#scope">v0.1 Scope</a>
+      <a href="#decisions">Decisions</a>
+      <a href="#changelog">Changelog</a>
+    </nav>
+  </div>
+</div>
+
+<header class="wrap hero">
+  <div class="hero-grid">
+    <div>
+      <p class="eyebrow">AI-native kitchen automation · Bangalore</p>
+      <h1>Kitchen OS</h1>
+      <p class="lead">A living journal of building an AI cooking system — <b>software-first, hardware-last</b>. We prove the machine can <em>understand</em> cooking before we ever buy an arm.</p>
+      <div class="meta-row">
+        <span class="chip"><span class="pulse"></span> <b>Phase&nbsp;0</b> &nbsp;Kitchen OS v0.1</span>
+        <span class="chip">Last updated&nbsp; <b>5 Jun 2026, 15:14 IST</b></span>
+        <span class="chip">Doc&nbsp;rev&nbsp; <b>r1</b></span>
+      </div>
+    </div>
+
+    <!-- ============ HERO SVG ART ============ -->
+    <svg class="art" viewBox="0 0 720 460" role="img" aria-label="A robotic arm holding a spoon over a steaming pan on an induction glow, driven by an AI recipe graph.">
+      <defs>
+        <linearGradient id="heat" x1="0" y1="0" x2="1" y2="1">
+          <stop offset="0" stop-color="#FF7A45"/><stop offset="1" stop-color="#FFB068"/>
+        </linearGradient>
+        <linearGradient id="steel" x1="0" y1="0" x2="1" y2="1">
+          <stop offset="0" stop-color="#2C3A4A"/><stop offset="1" stop-color="#475A6E"/>
+        </linearGradient>
+        <radialGradient id="glow" cx="50%" cy="50%" r="50%">
+          <stop offset="0" stop-color="#FF7A45" stop-opacity=".55"/>
+          <stop offset="55%" stop-color="#FF7A45" stop-opacity=".12"/>
+          <stop offset="100%" stop-color="#FF7A45" stop-opacity="0"/>
+        </radialGradient>
+        <radialGradient id="panFace" cx="50%" cy="35%" r="75%">
+          <stop offset="0" stop-color="#26313D"/><stop offset="1" stop-color="#0E141B"/>
+        </radialGradient>
+        <linearGradient id="mintline" x1="0" y1="0" x2="1" y2="0">
+          <stop offset="0" stop-color="#3ECFA0"/><stop offset="1" stop-color="#5BA8FF"/>
+        </linearGradient>
+      </defs>
+
+      <!-- frame -->
+      <rect x="2" y="2" width="716" height="456" rx="24" fill="#0E141B" stroke="rgba(255,255,255,.06)"/>
+
+      <!-- induction glow -->
+      <circle cx="330" cy="330" r="180" fill="url(#glow)"/>
+      <ellipse cx="330" cy="372" rx="150" ry="20" fill="#FF7A45" opacity=".10"/>
+
+      <!-- AI recipe graph (left) -->
+      <g stroke="url(#mintline)" stroke-width="2" fill="none" opacity=".85">
+        <path d="M70 120 L120 95 M120 95 L120 150 M120 150 L78 185 M120 150 L165 178"/>
+      </g>
+      <g fill="#0E141B" stroke="url(#mintline)" stroke-width="2">
+        <circle cx="70" cy="120" r="9"/><circle cx="120" cy="95" r="11"/>
+        <circle cx="120" cy="150" r="9"/><circle cx="78" cy="185" r="7"/><circle cx="165" cy="178" r="7"/>
+      </g>
+      <text x="60" y="70" fill="#6f8194" font-family="ui-monospace,monospace" font-size="12">recipe → steps</text>
+
+      <!-- data flowing to the arm -->
+      <path d="M176 150 C 280 120, 360 90, 470 96" stroke="url(#mintline)" stroke-width="2"
+            stroke-dasharray="4 7" fill="none" opacity=".7"/>
+
+      <!-- steam -->
+      <g fill="none" stroke="#AebbC8" stroke-width="6" stroke-linecap="round" opacity=".5">
+        <path class="steam s1" d="M292 250 q -16 -26 0 -52 q 16 -26 0 -52"/>
+        <path class="steam s2" d="M332 244 q -16 -28 0 -56 q 16 -28 0 -56"/>
+        <path class="steam s3" d="M372 250 q -16 -26 0 -52 q 16 -26 0 -52"/>
+      </g>
+
+      <!-- pan -->
+      <ellipse cx="330" cy="316" rx="132" ry="40" fill="#0A0E13"/>
+      <ellipse cx="330" cy="308" rx="132" ry="40" fill="url(#panFace)" stroke="#56697d" stroke-width="3"/>
+      <ellipse cx="330" cy="308" rx="104" ry="28" fill="#0B1117" opacity=".7"/>
+      <rect x="455" y="300" width="120" height="14" rx="7" fill="url(#steel)"/>
+      <!-- ingredient dots -->
+      <circle cx="312" cy="300" r="7" fill="url(#heat)"/>
+      <circle cx="350" cy="312" r="6" fill="#FFB068"/>
+      <circle cx="330" cy="296" r="5" fill="#FF7A45"/>
+
+      <!-- robotic arm -->
+      <g stroke-linecap="round" fill="none">
+        <!-- mount -->
+        <rect x="600" y="40" width="70" height="40" rx="10" fill="url(#steel)" stroke="#5e7286" stroke-width="2"/>
+        <circle cx="635" cy="80" r="13" fill="#1B2430" stroke="#6f8497" stroke-width="3"/>
+        <!-- seg 1 -->
+        <line x1="635" y1="80" x2="520" y2="150" stroke="url(#heat)" stroke-width="16"/>
+        <circle cx="520" cy="150" r="13" fill="#1B2430" stroke="#6f8497" stroke-width="3"/>
+        <!-- seg 2 -->
+        <line x1="520" y1="150" x2="430" y2="210" stroke="url(#heat)" stroke-width="14"/>
+        <circle cx="430" cy="210" r="11" fill="#1B2430" stroke="#6f8497" stroke-width="3"/>
+        <!-- wrist + spoon -->
+        <line x1="430" y1="210" x2="372" y2="246" stroke="url(#steel)" stroke-width="11"/>
+      </g>
+      <!-- spoon head -->
+      <ellipse cx="360" cy="256" rx="20" ry="12" fill="#56697d" stroke="#7e93a7" stroke-width="2" transform="rotate(28 360 256)"/>
+      <ellipse cx="360" cy="256" rx="13" ry="7" fill="#0E141B" transform="rotate(28 360 256)"/>
+    </svg>
+    <!-- ========== END HERO SVG ART ========== -->
+  </div>
+</header>
+
+<main class="wrap">
+
+  <!-- THESIS -->
+  <section id="thesis">
+    <p class="eyebrow">The bet</p>
+    <h2>The thesis</h2>
+    <p class="lead">Kitchen robotics is really three problems. The defensible value lives in the last two — so we build those first, with no hardware.</p>
+    <div class="grid3" style="margin-top:18px">
+      <div class="card">
+        <h3 style="margin-top:0">1 · Robot control</h3>
+        <p class="muted" style="margin:0">Move the arm, pick, stir, pour. A solved-ish, commodity layer with mature open-source tooling.</p>
+      </div>
+      <div class="card">
+        <h3 style="margin-top:0">2 · Cooking intelligence</h3>
+        <p class="muted" style="margin:0">Recognise <em>state</em> — onions golden, oil too hot, curry reducing. Cooking is fundamentally a state-recognition problem.</p>
+      </div>
+      <div class="card">
+        <h3 style="margin-top:0">3 · Recipe knowledge</h3>
+        <p class="muted" style="margin:0">Turn “make butter chicken” into ordered, executable steps. Structured culinary knowledge.</p>
+      </div>
+    </div>
+    <div class="callout mint" style="margin-top:18px">
+      <span class="ico">🧠</span>
+      <div><b>Operating principle — software-first, hardware-last.</b> The biggest mistake is buying hardware before you know what software it should run. The first thing to prove is not robotics; it’s that our software can understand and execute cooking procedures.</div>
+    </div>
+    <h3>Guard-rails we’ve already chosen</h3>
+    <ul class="clean">
+      <li>Build the robotics layer in <b>Python</b> (ROS2 · MoveIt2 · OpenCV), not Rust. Rust only for the niche vector-index layer.</li>
+      <li>Use an <b>induction cooktop</b>, not gas — digital, API-controllable, safer to automate.</li>
+      <li><b>No knife / cutting work</b> early — it needs force feedback, precision and safety systems. Start with pick · move · pour · stir.</li>
+      <li>First real milestone is tiny on purpose: <b>“robot adds onions to a hot pan and stirs for 60 seconds.”</b> If that works, perception + planning + execution are all proven.</li>
+    </ul>
+  </section>
+
+  <!-- ROADMAP -->
+  <section id="roadmap">
+    <p class="eyebrow">The arc</p>
+    <h2>Phased roadmap</h2>
+    <p class="lead">Each phase de-risks the next. We only buy an arm once the software brain is real.</p>
+
+    <svg class="roadmap" viewBox="0 0 920 210" role="img" aria-label="Five-phase roadmap from Kitchen OS to a curry prototype.">
+      <defs>
+        <linearGradient id="rline" x1="0" y1="0" x2="1" y2="0">
+          <stop offset="0" stop-color="#FF7A45"/><stop offset="1" stop-color="#3ECFA0"/>
+        </linearGradient>
+      </defs>
+      <line x1="60" y1="70" x2="860" y2="70" stroke="url(#rline)" stroke-width="3"/>
+      <!-- nodes -->
+      <g font-family="ui-monospace,monospace">
+        <!-- P0 -->
+        <circle cx="80" cy="70" r="15" fill="#0E141B" stroke="#FF7A45" stroke-width="3"/>
+        <text x="80" y="75" text-anchor="middle" fill="#FFB068" font-size="13" font-weight="700">0</text>
+        <text x="80" y="115" text-anchor="middle" fill="#E6EDF3" font-size="13" font-weight="700">Kitchen OS</text>
+        <text x="80" y="134" text-anchor="middle" fill="#93A1B0" font-size="11">recipe → JSON</text>
+        <text x="80" y="40" text-anchor="middle" fill="#3ECFA0" font-size="10.5">◀ we are here</text>
+        <!-- P1 -->
+        <circle cx="275" cy="70" r="13" fill="#0E141B" stroke="#6f8497" stroke-width="3"/>
+        <text x="275" y="74" text-anchor="middle" fill="#93A1B0" font-size="12" font-weight="700">1</text>
+        <text x="275" y="115" text-anchor="middle" fill="#E6EDF3" font-size="13" font-weight="700">Simulator</text>
+        <text x="275" y="134" text-anchor="middle" fill="#93A1B0" font-size="11">planner + virtual robot</text>
+        <!-- P2 -->
+        <circle cx="470" cy="70" r="13" fill="#0E141B" stroke="#6f8497" stroke-width="3"/>
+        <text x="470" y="74" text-anchor="middle" fill="#93A1B0" font-size="12" font-weight="700">2</text>
+        <text x="470" y="115" text-anchor="middle" fill="#E6EDF3" font-size="13" font-weight="700">Vision</text>
+        <text x="470" y="134" text-anchor="middle" fill="#93A1B0" font-size="11">detect browning · steam</text>
+        <!-- P3 -->
+        <circle cx="665" cy="70" r="13" fill="#0E141B" stroke="#6f8497" stroke-width="3"/>
+        <text x="665" y="74" text-anchor="middle" fill="#93A1B0" font-size="12" font-weight="700">3</text>
+        <text x="665" y="115" text-anchor="middle" fill="#E6EDF3" font-size="13" font-weight="700">Cheap arm</text>
+        <text x="665" y="134" text-anchor="middle" fill="#93A1B0" font-size="11">pick · move · pour · stir</text>
+        <!-- P4-6 -->
+        <circle cx="860" cy="70" r="13" fill="#0E141B" stroke="#3ECFA0" stroke-width="3"/>
+        <text x="860" y="74" text-anchor="middle" fill="#3ECFA0" font-size="11" font-weight="700">4–6</text>
+        <text x="860" y="115" text-anchor="middle" fill="#E6EDF3" font-size="13" font-weight="700">Curry</text>
+        <text x="860" y="134" text-anchor="middle" fill="#93A1B0" font-size="11">full prototype</text>
+      </g>
+    </svg>
+  </section>
+
+  <!-- SCOPE -->
+  <section id="scope">
+    <p class="eyebrow">Phase 0 · the only thing it must prove</p>
+    <h2>Kitchen OS v0.1 — scope</h2>
+    <p class="lead">A command-line pipeline that turns a <b>recipe URL or pasted text</b> into a <b>validated, machine-executable recipe JSON</b>. No robot, no vision, no scraping at scale.</p>
+
+    <div class="callout" style="margin-top:18px">
+      <span class="ico">🎯</span>
+      <div><b>The one hypothesis:</b> Can software reliably decompose human cooking instructions into structured, executable steps — including the “how do I know this step is done?” cues? If yes, the simulator → vision → arm phases have a foundation. If no, we learned it in ~2 weeks instead of after buying an arm.</div>
+    </div>
+
+    <h3>The core artifact — the recipe schema</h3>
+    <p class="muted">This is 80% of the value. It’s deliberately <b>robot-ready</b>: every step carries a completion condition that is either <code>timed</code> or <code>state</code>, and each state-based step names an <code>observable</code> — exactly what the Phase-2 vision system will later detect. So v0.1 output is never throwaway.</p>
+<pre><code><span class="tok-pun">{</span>
+  <span class="tok-key">"id"</span>: <span class="tok-str">"dal-tadka"</span>,
+  <span class="tok-key">"title"</span>: <span class="tok-str">"Dal Tadka"</span>,
+  <span class="tok-key">"source"</span>: <span class="tok-pun">{</span> <span class="tok-key">"type"</span>: <span class="tok-str">"url"</span>, <span class="tok-key">"ref"</span>: <span class="tok-str">"https://…"</span>, <span class="tok-key">"retrieved_at"</span>: <span class="tok-str">"2026-06-05"</span> <span class="tok-pun">}</span>,
+  <span class="tok-key">"servings"</span>: <span class="tok-num">4</span>,
+  <span class="tok-key">"ingredients"</span>: <span class="tok-pun">[</span>
+    <span class="tok-pun">{</span> <span class="tok-key">"name"</span>: <span class="tok-str">"toor dal"</span>, <span class="tok-key">"quantity"</span>: <span class="tok-num">1</span>, <span class="tok-key">"unit"</span>: <span class="tok-str">"cup"</span>, <span class="tok-key">"prep"</span>: <span class="tok-str">"rinsed"</span> <span class="tok-pun">}</span>,
+    <span class="tok-pun">{</span> <span class="tok-key">"name"</span>: <span class="tok-str">"ghee"</span>, <span class="tok-key">"quantity"</span>: <span class="tok-num">2</span>, <span class="tok-key">"unit"</span>: <span class="tok-str">"tbsp"</span>, <span class="tok-key">"prep"</span>: <span class="tok-num">null</span> <span class="tok-pun">}</span>
+  <span class="tok-pun">]</span>,
+  <span class="tok-key">"equipment"</span>: <span class="tok-pun">[</span><span class="tok-str">"pressure cooker"</span>, <span class="tok-str">"tadka pan"</span><span class="tok-pun">]</span>,
+  <span class="tok-key">"steps"</span>: <span class="tok-pun">[</span>
+    <span class="tok-pun">{</span> <span class="tok-key">"id"</span>: <span class="tok-num">1</span>, <span class="tok-key">"action"</span>: <span class="tok-str">"add"</span>,  <span class="tok-key">"ingredient"</span>: <span class="tok-str">"ghee"</span>, <span class="tok-key">"vessel"</span>: <span class="tok-str">"pan"</span>,
+      <span class="tok-key">"amount"</span>: <span class="tok-pun">{</span> <span class="tok-key">"value"</span>: <span class="tok-num">2</span>, <span class="tok-key">"unit"</span>: <span class="tok-str">"tbsp"</span> <span class="tok-pun">}</span>,
+      <span class="tok-key">"completion"</span>: <span class="tok-pun">{</span> <span class="tok-key">"type"</span>: <span class="tok-str">"timed"</span>, <span class="tok-key">"duration_s"</span>: <span class="tok-num">5</span> <span class="tok-pun">}</span> <span class="tok-pun">}</span>,
+
+    <span class="tok-pun">{</span> <span class="tok-key">"id"</span>: <span class="tok-num">2</span>, <span class="tok-key">"action"</span>: <span class="tok-str">"heat"</span>, <span class="tok-key">"vessel"</span>: <span class="tok-str">"pan"</span>,
+      <span class="tok-key">"target"</span>: <span class="tok-pun">{</span> <span class="tok-key">"temperature_c"</span>: <span class="tok-num">180</span> <span class="tok-pun">}</span>,
+      <span class="tok-key">"completion"</span>: <span class="tok-pun">{</span> <span class="tok-key">"type"</span>: <span class="tok-str">"state"</span>, <span class="tok-key">"cue"</span>: <span class="tok-str">"ghee shimmering"</span>, <span class="tok-key">"observable"</span>: <span class="tok-str">"oil_temp"</span> <span class="tok-pun">}</span> <span class="tok-pun">}</span>,
+
+    <span class="tok-pun">{</span> <span class="tok-key">"id"</span>: <span class="tok-num">3</span>, <span class="tok-key">"action"</span>: <span class="tok-str">"saute"</span>, <span class="tok-key">"ingredient"</span>: <span class="tok-str">"onions"</span>, <span class="tok-key">"vessel"</span>: <span class="tok-str">"pan"</span>,
+      <span class="tok-key">"completion"</span>: <span class="tok-pun">{</span> <span class="tok-key">"type"</span>: <span class="tok-str">"state"</span>, <span class="tok-key">"cue"</span>: <span class="tok-str">"golden brown"</span>, <span class="tok-key">"observable"</span>: <span class="tok-str">"onion_color"</span> <span class="tok-pun">}</span> <span class="tok-pun">}</span>
+  <span class="tok-pun">]</span>,
+  <span class="tok-key">"extraction"</span>: <span class="tok-pun">{</span> <span class="tok-key">"model"</span>: <span class="tok-str">"claude-sonnet-4-6"</span>, <span class="tok-key">"confidence"</span>: <span class="tok-num">0.91</span>,
+                  <span class="tok-key">"flags"</span>: <span class="tok-pun">[</span><span class="tok-str">"ambiguous_quantity:salt"</span><span class="tok-pun">]</span> <span class="tok-pun">}</span>
+<span class="tok-pun">}</span></code></pre>
+
+    <div class="grid2" style="margin-top:14px">
+      <div class="card">
+        <h3 style="margin-top:0"><code>action</code> vocabulary</h3>
+        <p class="muted" style="margin:0">The “action space” — small and extensible:</p>
+        <p style="margin:8px 0 0"><code>add</code> <code>heat</code> <code>saute</code> <code>stir</code> <code>simmer</code> <code>boil</code> <code>fry</code> <code>flip</code> <code>pour</code> <code>transfer</code> <code>wait</code> <code>season</code> <code>knead</code> <code>rest</code> <code>garnish</code> <code>serve</code></p>
+      </div>
+      <div class="card">
+        <h3 style="margin-top:0"><code>completion.type</code></h3>
+        <ul class="clean" style="margin:6px 0 0">
+          <li><b>timed</b> → <code>duration_s</code></li>
+          <li><b>state</b> → <code>cue</code> + <code>observable</code> (every state step must name an observable)</li>
+        </ul>
+      </div>
+    </div>
+
+    <h3>Pipeline</h3>
+    <div class="pipe">
+      <div class="pstep"><div class="rail"><div class="node">1</div><div class="line"></div></div>
+        <div class="body"><b>Ingest</b><span>URL / pasted text → clean recipe text (trafilatura, strip boilerplate)</span></div></div>
+      <div class="pstep"><div class="rail"><div class="node">2</div><div class="line"></div></div>
+        <div class="body"><b>Extract</b><span>Claude tool-use → JSON guaranteed to match the schema (not regex-parsed)</span></div></div>
+      <div class="pstep"><div class="rail"><div class="node">3</div><div class="line"></div></div>
+        <div class="body"><b>Validate</b><span>Pydantic + semantic sanity checks → confidence score + flags</span></div></div>
+      <div class="pstep"><div class="rail"><div class="node">4</div><div class="line"></div></div>
+        <div class="body"><b>Review</b><span>Human eyeballs flagged fields and corrects</span></div></div>
+      <div class="pstep"><div class="rail"><div class="node">5</div></div>
+        <div class="body"><b>Store</b><span>Write <code>recipes/&lt;id&gt;.json</code> — source of truth, git-tracked</span></div></div>
+    </div>
+
+    <h3>Tech stack</h3>
+    <table>
+      <tr><th>Concern</th><th>Choice</th></tr>
+      <tr><td>Language</td><td>Python 3.12, <b>uv</b> for env/deps</td></tr>
+      <tr><td>Contract / validation</td><td><b>Pydantic v2</b> — the schema <em>is</em> the product</td></tr>
+      <tr><td>LLM</td><td><b>Claude</b> — Sonnet 4.6 (<code>claude-sonnet-4-6</code>) workhorse, Haiku 4.5 for cheap bulk; tool-use / structured output for guaranteed-valid JSON</td></tr>
+      <tr><td>Fetch / clean</td><td><code>httpx</code> + <code>trafilatura</code> (readability fallback)</td></tr>
+      <tr><td>CLI</td><td><code>typer</code></td></tr>
+      <tr><td>Tests / eval</td><td><code>pytest</code> + a gold-set scorer</td></tr>
+    </table>
+
+    <h3>Module layout <span class="pill">new standalone <code>kitchen-os</code> repo</span></h3>
+<pre><code>kitchen-os/
+├── pyproject.toml            <span class="tok-com"># uv-managed, Python 3.12</span>
+├── kitchen_os/
+│   ├── schema.py             <span class="tok-com"># Pydantic models = THE contract</span>
+│   ├── ingest/fetch.py       <span class="tok-com"># URL → clean text / passthrough for pasted text</span>
+│   ├── extract/prompt.py     <span class="tok-com"># extraction prompt + few-shot exemplars</span>
+│   ├── extract/extractor.py  <span class="tok-com"># Claude tool-use call → validated Recipe</span>
+│   ├── validate/checks.py    <span class="tok-com"># schema + sanity checks, confidence flags</span>
+│   ├── store/repo.py         <span class="tok-com"># write/read recipes/&lt;id&gt;.json</span>
+│   └── cli.py                <span class="tok-com"># `kitchen-os extract &lt;url|-&gt;`</span>
+├── recipes/                  <span class="tok-com"># output JSON (canonical)</span>
+├── eval/gold/                <span class="tok-com"># ~5 hand-labeled reference recipes</span>
+├── eval/score.py             <span class="tok-com"># extraction accuracy vs gold</span>
+└── tests/</code></pre>
+
+    <div class="grid2" style="margin-top:16px">
+      <div class="card">
+        <h3 style="margin-top:0">Milestones <span class="muted">(~2 weeks)</span></h3>
+        <ul class="clean">
+          <li><b>Week 1 — the spine.</b> <code>schema.py</code> + 5 gold recipes + extraction prompt + a CLI doing URL→text→Claude→validated JSON for <em>one</em> recipe end to end. <span class="pill now">now</span></li>
+          <li><b>Week 2 — trust it.</b> Validation + confidence flags + review loop; batch-extract 20–30 recipes; <code>eval/score.py</code> vs gold; iterate the prompt. <span class="pill next">next</span></li>
+          <li><b>Stretch.</b> A tiny <code>interpret.py</code> that “runs” a recipe against a virtual stub robot — first step of the kitchen simulator (Phase 1).</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h3 style="margin-top:0">Success criteria</h3>
+        <ul class="clean mint">
+          <li><b>100%</b> of outputs are schema-valid (Pydantic passes)</li>
+          <li><b>≥90%</b> of gold-set steps have correct <code>action</code> + <code>ingredient</code></li>
+          <li><b>Every</b> state step has a populated <code>observable</code></li>
+          <li>A human agrees the JSON is a faithful, executable representation of the recipe</li>
+        </ul>
+      </div>
+    </div>
+
+    <h3>Explicit non-goals <span class="muted">(deferred to later phases)</span></h3>
+    <p class="muted">No robot/ROS2 · no camera/vision · no YouTube/video/ASR · no vector DB · no web dashboard · no induction control · no real-time. Each is a later phase; pulling any in now is scope creep.</p>
+  </section>
+
+  <!-- DECISIONS -->
+  <section id="decisions">
+    <p class="eyebrow">What we locked, and why</p>
+    <h2>Decisions log</h2>
+    <p class="lead">The cheapest things to change now, the most expensive later. Captured so we can revisit with hindsight.</p>
+    <table>
+      <tr><th>Decision</th><th>Choice &amp; rationale</th><th>Date</th></tr>
+      <tr><td>Input source</td><td><b>Recipe text / websites</b> first. Fastest path: text → LLM → JSON, zero video/vision complexity. Video is a fast-follow once schema + planner are solid.</td><td class="muted">5 Jun 2026</td></tr>
+      <tr><td>LLM provider</td><td><b>Claude</b> (Sonnet 4.6) via tool-use / structured output — strong structured extraction, JSON guaranteed-valid rather than parsed.</td><td class="muted">5 Jun 2026</td></tr>
+      <tr><td>Storage</td><td><b>JSON files + Pydantic schema</b> as source of truth. Add a vector DB only when semantic retrieval is actually needed.</td><td class="muted">5 Jun 2026</td></tr>
+      <tr><td>Language / stack</td><td><b>Python</b> for everything robotics-adjacent; Rust reserved for the niche vector-index layer only.</td><td class="muted">5 Jun 2026</td></tr>
+    </table>
+
+    <h3>Open items</h3>
+    <ul class="clean">
+      <li>Confirm the <b>standalone <code>kitchen-os</code> repo</b> path (e.g. <code>C:\Users\David Francis\kitchen-os</code>) before scaffolding.</li>
+      <li>Provide <code>ANTHROPIC_API_KEY</code> for real extraction in Week 1 (stubbed until then).</li>
+      <li>Pick the first <b>5 gold recipes</b> — proposed: dal tadka, paneer butter masala, jeera rice, aloo gobi, masala chai.</li>
+    </ul>
+  </section>
+
+  <!-- CHANGELOG -->
+  <section id="changelog">
+    <p class="eyebrow">The journal — append as we go</p>
+    <h2>Changelog</h2>
+    <div class="log">
+      <div class="entry">
+        <div class="when">2026-06-05 · 15:14 IST — r1</div>
+        <p style="margin:.3em 0 0"><b>Scoped Kitchen OS v0.1 and started the build journal.</b> Locked the three Phase-0 decisions (text input · Claude · JSON files), defined the robot-ready recipe schema, the extraction pipeline, tech stack, module layout, ~2-week milestones and success criteria. Published this doc as the single source of truth, to be served via GitHub Pages.</p>
+      </div>
+    </div>
+    <div class="callout mint" style="margin-top:8px">
+      <span class="ico">📝</span>
+      <div><b>How to keep this alive:</b> add a new entry at the top of the changelog each work session, bump the <em>Doc rev</em> and <em>Last updated</em> stamp in the hero, then commit &amp; push. The newest learning always sits closest to the top.</div>
+    </div>
+  </section>
+
+</main>
+
+<footer class="wrap">
+  <p>Kitchen OS — build journal · <b>Last updated 5 June 2026, 15:14 IST</b> · doc rev r1<br/>
+  Living document — version-controlled in the <code>kitchen-os</code> repo (GitHub: Davidfrancisloretta) and published to GitHub Pages. Edit <code>index.html</code>, append a changelog entry, update the timestamp, commit.</p>
+</footer>
+
+</body>
+</html>
