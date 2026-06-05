@@ -181,8 +181,8 @@
       <p class="lead">A living journal of building an AI cooking system — <b>software-first, hardware-last</b>. We prove the machine can <em>understand</em> cooking before we ever buy an arm.</p>
       <div class="meta-row">
         <span class="chip"><span class="pulse"></span> <b>Phase&nbsp;0</b> &nbsp;Kitchen OS v0.1</span>
-        <span class="chip">Last updated&nbsp; <b>5 Jun 2026, 15:55 IST</b></span>
-        <span class="chip">Doc&nbsp;rev&nbsp; <b>r2</b></span>
+        <span class="chip">Last updated&nbsp; <b>5 Jun 2026, 16:15 IST</b></span>
+        <span class="chip">Doc&nbsp;rev&nbsp; <b>r3</b></span>
       </div>
     </div>
 
@@ -493,6 +493,10 @@
     <h2>Changelog</h2>
     <div class="log">
       <div class="entry">
+        <div class="when">2026-06-05 · 16:15 IST — r3</div>
+        <p style="margin:.3em 0 0"><b>Reframed Kitchen OS around CloudChef's Record → Recreate loop.</b> Studied CloudChef's <em>"Record &amp; Recreate Taste"</em> system (which they brand <b>KitchenOS</b>) and wrote <code>WORKFLOW.md</code> — the process map for <b>Record → Codify → Store → Recreate → Score → Refine</b>. Key reframe: the unit of value is a <b>sensor-grounded Recipe File</b>; recreation is done by a <b>guided human (no robot in the MVP)</b>; ground truth is <b>measured</b> (weight · temperature · induction power · time · RPM), never inferred from RGB. Proposed North-Star/MVP shift — from "classify a cooking state" to <b>"record a dish and recreate it within X% profile fidelity"</b> — pending a deliberate harness amendment.</p>
+      </div>
+      <div class="entry">
         <div class="when">2026-06-05 · 15:55 IST — r2</div>
         <p style="margin:.3em 0 0"><b>Adopted the Project Harness; locked perception-first sequencing.</b> Wrote <code>HARNESS.md</code> — the project's binding operating contract (10 laws + phase gates + a Not-Yet list) so the build can't drift into hardware-first, scope creep, or vanity demos. Recorded the key planning call: <b>recipe layer first (zero hardware, defines the state ontology) → one auto-labeled perception spike (water cold→boiling on our own induction plate) → broaden the state engine</b>, with the robot arm kept as an interchangeable actuator for later. Also pressure-tested the Founder's Thesis and corrected its ungrounded metrics (temperature from a sensor, not RGB; discrete states before continuous; sensors as auto-labelers; Rust/TurboVec deferred until a measured bottleneck). Added <code>CLAUDE.md</code> so every Claude Code session loads and obeys the harness automatically; a packaged project Skill is deferred until the Phase 0a pipeline exists and the workflow has been run a few times.</p>
       </div>
@@ -510,7 +514,7 @@
 </main>
 
 <footer class="wrap">
-  <p>Kitchen OS — build journal · <b>Last updated 5 June 2026, 15:55 IST</b> · doc rev r2<br/>
+  <p>Kitchen OS — build journal · <b>Last updated 5 June 2026, 16:15 IST</b> · doc rev r3<br/>
   Living document — version-controlled in the <code>kitchen-os</code> repo (GitHub: Davidfrancisloretta) and published to GitHub Pages. Edit <code>index.html</code>, append a changelog entry, update the timestamp, commit.</p>
 </footer>
 
