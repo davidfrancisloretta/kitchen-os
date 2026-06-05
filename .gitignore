@@ -1,0 +1,7 @@
+# Local research inputs — third-party content (e.g. extracted transcripts). Do NOT publish.
+inputs/
+
+# OS / editor cruft
+.DS_Store
+Thumbs.db
+*.log

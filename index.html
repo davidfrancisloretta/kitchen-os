@@ -181,8 +181,8 @@
       <p class="lead">A living journal of building an AI cooking system — <b>software-first, hardware-last</b>. We prove the machine can <em>understand</em> cooking before we ever buy an arm.</p>
       <div class="meta-row">
         <span class="chip"><span class="pulse"></span> <b>Phase&nbsp;0</b> &nbsp;Kitchen OS v0.1</span>
-        <span class="chip">Last updated&nbsp; <b>5 Jun 2026, 16:15 IST</b></span>
-        <span class="chip">Doc&nbsp;rev&nbsp; <b>r3</b></span>
+        <span class="chip">Last updated&nbsp; <b>5 Jun 2026, 18:09 IST</b></span>
+        <span class="chip">Doc&nbsp;rev&nbsp; <b>r4</b></span>
       </div>
     </div>
 
@@ -493,6 +493,10 @@
     <h2>Changelog</h2>
     <div class="log">
       <div class="entry">
+        <div class="when">2026-06-05 · 18:09 IST — r4</div>
+        <p style="margin:.3em 0 0"><b>Extracted the CloudChef video's audio (transcript) — it validates the Record → Recreate reframe.</b> Pulled the YouTube auto-captions via <code>yt-dlp</code> (kept local, unpublished). In the narration a guest chef confirms: a non-intrusive <b>recording engine captures temperature, weight and colour in real time</b> and codifies them into a <b>machine-readable file</b>; <b>unskilled operators recreate dishes</b> via "Google-Maps-style", <b>light-to-action</b> instructions with <b>RFID-tagged, precise-weight containers</b>; the OS <b>monitors and adjusts in real time</b>; dishes are broken into <b>sub-recipes</b>. Refinements to fold in: (1) recreation is a <b>real-time closed loop</b>, not open-loop replay; (2) key signals include <b>colour and rate-of-change</b> (e.g. dT/dt of the lamb), not just absolute values; (3) the core value prop is <b>deskilling</b> — reproduce a top chef's dish with an operator who can't cook.</p>
+      </div>
+      <div class="entry">
         <div class="when">2026-06-05 · 16:15 IST — r3</div>
         <p style="margin:.3em 0 0"><b>Reframed Kitchen OS around CloudChef's Record → Recreate loop.</b> Studied CloudChef's <em>"Record &amp; Recreate Taste"</em> system (which they brand <b>KitchenOS</b>) and wrote <code>WORKFLOW.md</code> — the process map for <b>Record → Codify → Store → Recreate → Score → Refine</b>. Key reframe: the unit of value is a <b>sensor-grounded Recipe File</b>; recreation is done by a <b>guided human (no robot in the MVP)</b>; ground truth is <b>measured</b> (weight · temperature · induction power · time · RPM), never inferred from RGB. Proposed North-Star/MVP shift — from "classify a cooking state" to <b>"record a dish and recreate it within X% profile fidelity"</b> — pending a deliberate harness amendment.</p>
       </div>
@@ -514,7 +518,7 @@
 </main>
 
 <footer class="wrap">
-  <p>Kitchen OS — build journal · <b>Last updated 5 June 2026, 16:15 IST</b> · doc rev r3<br/>
+  <p>Kitchen OS — build journal · <b>Last updated 5 June 2026, 18:09 IST</b> · doc rev r4<br/>
   Living document — version-controlled in the <code>kitchen-os</code> repo (GitHub: Davidfrancisloretta) and published to GitHub Pages. Edit <code>index.html</code>, append a changelog entry, update the timestamp, commit.</p>
 </footer>
 
