@@ -181,8 +181,8 @@
       <p class="lead">A living journal of building an AI cooking system — <b>software-first, hardware-last</b>. We prove the machine can <em>understand</em> cooking before we ever buy an arm.</p>
       <div class="meta-row">
         <span class="chip"><span class="pulse"></span> <b>Phase&nbsp;0</b> &nbsp;Kitchen OS v0.1</span>
-        <span class="chip">Last updated&nbsp; <b>5 Jun 2026, 15:14 IST</b></span>
-        <span class="chip">Doc&nbsp;rev&nbsp; <b>r1</b></span>
+        <span class="chip">Last updated&nbsp; <b>5 Jun 2026, 15:55 IST</b></span>
+        <span class="chip">Doc&nbsp;rev&nbsp; <b>r2</b></span>
       </div>
     </div>
 
@@ -493,6 +493,10 @@
     <h2>Changelog</h2>
     <div class="log">
       <div class="entry">
+        <div class="when">2026-06-05 · 15:55 IST — r2</div>
+        <p style="margin:.3em 0 0"><b>Adopted the Project Harness; locked perception-first sequencing.</b> Wrote <code>HARNESS.md</code> — the project's binding operating contract (10 laws + phase gates + a Not-Yet list) so the build can't drift into hardware-first, scope creep, or vanity demos. Recorded the key planning call: <b>recipe layer first (zero hardware, defines the state ontology) → one auto-labeled perception spike (water cold→boiling on our own induction plate) → broaden the state engine</b>, with the robot arm kept as an interchangeable actuator for later. Also pressure-tested the Founder's Thesis and corrected its ungrounded metrics (temperature from a sensor, not RGB; discrete states before continuous; sensors as auto-labelers; Rust/TurboVec deferred until a measured bottleneck).</p>
+      </div>
+      <div class="entry">
         <div class="when">2026-06-05 · 15:14 IST — r1</div>
         <p style="margin:.3em 0 0"><b>Scoped Kitchen OS v0.1 and started the build journal.</b> Locked the three Phase-0 decisions (text input · Claude · JSON files), defined the robot-ready recipe schema, the extraction pipeline, tech stack, module layout, ~2-week milestones and success criteria. Published this doc as the single source of truth, to be served via GitHub Pages.</p>
       </div>
@@ -506,7 +510,7 @@
 </main>
 
 <footer class="wrap">
-  <p>Kitchen OS — build journal · <b>Last updated 5 June 2026, 15:14 IST</b> · doc rev r1<br/>
+  <p>Kitchen OS — build journal · <b>Last updated 5 June 2026, 15:55 IST</b> · doc rev r2<br/>
   Living document — version-controlled in the <code>kitchen-os</code> repo (GitHub: Davidfrancisloretta) and published to GitHub Pages. Edit <code>index.html</code>, append a changelog entry, update the timestamp, commit.</p>
 </footer>
 
