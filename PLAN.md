@@ -41,7 +41,7 @@ the design + tech stack; define metrics + tracking; set the iteration cadence an
 **Out of scope now (Harness Not-Yet list):** robot arm, Rust/streaming services, vector DB,
 thermal camera, RFID, knowledge-graph DB, cloud backend. Each unlocks on a named trigger.
 
-**Product goal (working North Star, pending harness ratification — see §7):**
+**Product goal (North Star — ratified in HARNESS v2; see its Milestone Ladder):**
 > *Record a dish once, codify it into a sensor-grounded Recipe File, and have a **guided human
 > operator who can't cook** recreate it to within an agreed **profile-fidelity %** — no robot.*
 
@@ -135,13 +135,13 @@ flowchart TD
 
 ---
 
-## 7. Proposed harness amendment (for sign-off)
+## 7. Harness amendment — ratified (HARNESS v2)
 
-The Plan adopts the Record/Recreate framing. To keep the binding contract consistent, propose
-updating the Harness **North Star / single measure** from *"can the system name the cooking
-state?"* → ***"can we record a dish and have a guided operator recreate it to within X %
-profile fidelity?"*** (state-understanding becomes one channel inside Record, not the whole
-goal). **Pending your OK** before editing `HARNESS.md` (deliberate-amendment rule).
+The Harness **North Star** is now *"record a dish once and have a guided operator recreate it
+to within X % profile fidelity."* State-understanding is **not** dropped — *"can the system
+name the cooking state?"* is **milestone M3** (early) on the Harness **Milestone Ladder**,
+which maps onto the iteration plan in §5. We climb the ladder progressively; the North Star is
+the final rung.
 
 ---
 

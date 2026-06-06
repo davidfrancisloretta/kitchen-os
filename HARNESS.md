@@ -1,6 +1,6 @@
 # Kitchen OS — Project Harness
 
-**v1 · 2026-06-05 15:55 IST**
+**v2 · 2026-06-05 18:47 IST**
 
 This is the operating contract for Kitchen OS. Its job is to keep us building the
 *one* thing that matters and to make drift impossible-by-accident. Read it at the
@@ -18,8 +18,26 @@ This is the operating contract for Kitchen OS. Its job is to keep us building th
 > proven in software and cheap sensors — **before** spending meaningfully on robotics.
 > The robot arm is an interchangeable actuator bolted onto an already-intelligent system.
 
-**The single measure of progress:** can our system watch a cooking process and correctly
-say what stage it is in? Not: can a robot move.
+**The single measure of the North Star:** can we **record a dish once and have a guided
+operator (who can't cook) recreate it to within an agreed X% profile fidelity** — no robot?
+Not: can a robot move.
+
+State-understanding is **not** dropped — *"can the system name the cooking state?"* is an
+**early rung** on the ladder to that North Star. We climb progressively; each rung is a
+milestone, and many steps sit between the first rung and the last.
+
+### Milestone Ladder *(progressive — climb in order)*
+
+| # | Milestone | Phase |
+|---|---|---|
+| M1 | **Codify from text** — recipe → valid structured Recipe File (text→JSON) | 0a |
+| M2 | **Record one cook** — capture synchronized sensor streams for one dish | 0b |
+| M3 | **Name the cooking state** — from the signals, correctly call the stage (e.g. water boiling, onion golden) as discrete, sensor-grounded classes | 0b–1 |
+| M4 | **Codify a recording** — fit real sensor profiles into a sensor-grounded Recipe File | 0b–0c |
+| M5 | **Guided recreate (open loop)** — a human reproduces the dish via step guidance + weight validation | 0c |
+| M6 | **Score fidelity** — actual vs target profiles → a fidelity % | 0c |
+| M7 | **Closed-loop recreate** — real-time adjustment to hit the recorded targets | 1 |
+| ★ | **North Star — record once, recreate within X% fidelity** (multiple dishes; operator who can't cook) | 1+ |
 
 ---
 
@@ -139,5 +157,9 @@ Robot videos · cutting vegetables · a fully automated kitchen · a big bill of
 lines of Rust · a clever architecture diagram. **Only state understanding counts.**
 
 ---
+
+**Amendments:** v2 (2026-06-05 18:47 IST) — North Star set to *record → recreate within X%
+fidelity*; added the **Milestone Ladder** (state-naming is rung **M3**, early — not dropped).
+Logged in journal r6.
 
 *Amend deliberately. Log every change. Never drift.*
